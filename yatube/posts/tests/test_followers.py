@@ -30,7 +30,6 @@ class PostsURLTests(TestCase):
             kwargs={'username': cls.author.username}
         )
 
-
     def setUp(self):
         self.guest_client = Client()
         self.user = User.objects.create_user(username='TestUser')
@@ -52,9 +51,9 @@ class PostsURLTests(TestCase):
         пользователей и удалять их из подписок.
         """
         count = Follow.objects.count()
-        response = self.authorized_client.get(self.url_follow)
+        self.authorized_client.get(self.url_follow)
         self.assertEqual(Follow.objects.count(), count + 1)
-        response = self.authorized_client.get(self.url_unfollow)
+        self.authorized_client.get(self.url_unfollow)
         self.assertEqual(Follow.objects.count(), count)
 
     def test_new_post_appears_in_subscribers_feed(self):
@@ -84,5 +83,3 @@ class PostsURLTests(TestCase):
         self.assertEqual(posts_count(self.user), count + 1)
         # проверяем ленту другого пользователя
         self.assertEqual(posts_count(self.user1), count1)
-
-

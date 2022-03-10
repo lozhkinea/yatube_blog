@@ -19,7 +19,8 @@ urlpatterns = [
         views.add_comment,
         name='add_comment'
     ),
-    path('follow/',
+    path(
+        'follow/',
         views.follow_index,
         name='follow_index'
     ),

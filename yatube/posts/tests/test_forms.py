@@ -72,7 +72,7 @@ class PostCreateFormTests(TestCase):
             )
         )
         self.assertEqual(Post.objects.count(), posts_count + 1)
-        # при отправке поста с картинкой через форму PostForm 
+        # при отправке поста с картинкой через форму PostForm
         # создаётся запись в базе данных
         self.assertTrue(
             Post.objects.filter(
