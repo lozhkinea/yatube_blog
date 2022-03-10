@@ -129,3 +129,24 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
         post_new_text = Post.objects.get(id=self.post.id).text
         self.assertEqual(post_new_text, post_text)
+
+    def test_create_user(self):
+        """
+        При заполнении формы reverse('users:signup')
+        создаётся новый пользователь.
+        """
+        users_count = User.objects.count()
+        form_data = {
+            'username': 'NewUser',
+            'password1': 'NewPassword1',
+            'password2': 'NewPassword1'
+        }
+        response = self.guest_client.post(
+            reverse('users:signup'),
+            data=form_data,
+            follow=True
+        )
+        self.assertRedirects(
+            response, reverse('posts:index')
+        )
+        self.assertEqual(User.objects.count(), users_count + 1)
