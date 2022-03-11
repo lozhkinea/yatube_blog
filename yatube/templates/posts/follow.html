@@ -1,10 +1,9 @@
 {# Шаблон страницы подписок пользователя #}
 
 {% extends 'base.html' %}
-{% load thumbnail %}
 {% block title %}Подписки{% endblock %}
 {% block content %}
-{% include 'includes/switcher.html' %}
+{% include 'includes/switcher.html' with follow=True %}
         {% for post in page_obj %}
         {% include 'posts/includes/post_list.html' %}
         {% if post.group %}

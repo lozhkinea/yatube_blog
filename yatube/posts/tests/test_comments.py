@@ -2,33 +2,26 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from ..models import Group, Post, Comment
+from ..models import Comment, Post
 
 User = get_user_model()
 
 
-class PostsURLTests(TestCase):
+class PostsCommentsTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.TEST_SLUG = 'test-slug'
+        cls.TEST_COMMENT_TEXT = 'Тестовый комментарий'
         cls.author = User.objects.create_user(
             username='author'
         )
-        cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug=cls.TEST_SLUG,
-            description='Тестовое описание',
-        )
         cls.post = Post.objects.create(
-            text='Тестовый пост' * 100,
-            author=cls.author,
-            group=cls.group
+            text='Тестовый пост',
+            author=cls.author
         )
-        cls.comment = Comment.objects.create(
-            text='Тестовый комментарий ' * 100,
-            author=cls.author,
-            post=cls.post
+        cls.url_add_comment = reverse(
+            'posts:add_comment',
+            kwargs={'post_id': cls.post.id}
         )
 
     def setUp(self):
@@ -37,41 +30,36 @@ class PostsURLTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    def test_anonymous_cannot_create_post(self):
+    def test_authorized_user_can_create_comment(self):
         """Комментировать посты может только авторизованный пользователь."""
-        count = Post.objects.count()
-        form_data = {'text': self.comment.text}
-        address = reverse(
-            'posts:add_comment',
-            kwargs={'post_id': self.comment.post.id}
-        )
+        count = Comment.objects.count()
+        form_data = {'text': self.TEST_COMMENT_TEXT}
+        address = self.url_add_comment
         response = self.guest_client.post(
             address,
             data=form_data,
             follow=True
         )
-        self.assertRedirects(response, f'/auth/login/?next={address}')
         self.assertEqual(Comment.objects.count(), count)
+        self.assertRedirects(response, f'/auth/login/?next={address}')
 
     def test_create_comment(self):
         """после успешной отправки комментарий появляется на странице поста."""
         count = Comment.objects.count()
-        form_data = {'text': self.comment.text}
+        form_data = {'text': self.TEST_COMMENT_TEXT}
         response = self.authorized_client.post(
-            reverse(
-                'posts:add_comment',
-                kwargs={'post_id': self.comment.post.id}
-            ),
+            self.url_add_comment,
             data=form_data,
             follow=True
         )
+        self.assertEqual(Comment.objects.count(), count + 1)
         self.assertRedirects(
             response,
             reverse(
-                'posts:post_detail', kwargs={'post_id': self.comment.post.id}
+                'posts:post_detail', kwargs={'post_id': self.post.id}
             )
         )
-        self.assertEqual(Comment.objects.count(), count + 1)
-        self.assertTrue(
-            Comment.objects.filter(text=self.comment.text).exists()
+        self.assertEqual(
+            response.context['comments'][0].text,
+            self.TEST_COMMENT_TEXT
         )
