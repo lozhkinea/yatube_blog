@@ -1,19 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import CommentForm, PostForm
-from .models import Follow, Group, Post, User
-
-# from django.views.decorators.cache import cache_page
-
+from posts.forms import CommentForm, PostForm
+from posts.models import Follow, Group, Post, User
 
 POSTS_PER_PAGE = 10
 
 
-# @cache_page(20)
 def index(request):
-    post_list = Post.objects.all()
+    post_list = Post.objects.select_related('author', 'group').all()
     paginator = Paginator(post_list, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -25,7 +22,12 @@ def index(request):
 
 
 def group_posts(request, slug):
-    group = get_object_or_404(Group, slug=slug)
+    group = get_object_or_404(
+        Group.objects.prefetch_related(
+            Prefetch('posts', queryset=Post.objects.select_related('author'))
+        ),
+        slug=slug
+    )
     post_list = group.posts.all()
     paginator = Paginator(post_list, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
@@ -39,9 +41,13 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    author = get_object_or_404(User, username=username)
-    # post_list = author.post_set.all()
-    post_list = Post.objects.filter(author=author).all()
+    author = get_object_or_404(
+        User.objects.prefetch_related(
+            Prefetch('post_set', queryset=Post.objects.select_related('group'))
+        ),
+        username=username
+    )
+    post_list = author.post_set.all()
     paginator = Paginator(post_list, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

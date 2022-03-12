@@ -1,12 +1,8 @@
-from django.contrib.auth import get_user_model
 from django.test import TestCase
-
-from posts.models import CHARS_IN_POST_STR, Group, Post
-
-User = get_user_model()
+from posts.models import CHARS_IN_POST_STR, Group, Post, User
 
 
-class PostModelTest(TestCase):
+class TestPostModel(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -36,7 +32,7 @@ class PostModelTest(TestCase):
         """
         В поле __str__  объекта group записано значение поля group.title.
         """
-        group = PostModelTest.group
+        group = self.group
         expected_object_name = group.title
         self.assertEqual(expected_object_name, str(group))
 
@@ -57,7 +53,7 @@ class PostModelTest(TestCase):
 
     def test_help_text(self):
         """help_text в полях совпадает с ожидаемым."""
-        post = PostModelTest.post
+        post = self.post
         field_help_texts = {
             'text': 'Введите текст поста',
             'group': 'Выберите группу',

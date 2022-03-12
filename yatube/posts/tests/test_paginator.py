@@ -1,11 +1,7 @@
-from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse_lazy
-
-from ..models import Group, Post
-from ..views import POSTS_PER_PAGE
-
-User = get_user_model()
+from posts.models import Group, Post, User
+from posts.views import POSTS_PER_PAGE
 
 
 class TestPaginatorView(TestCase):

@@ -3,19 +3,16 @@ import tempfile
 
 from django import forms
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse_lazy
+from posts.models import Group, Post, User
 
-from ..models import Group, Post
-
-User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
-class PostsPagesTests(TestCase):
+class TestPostViews(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

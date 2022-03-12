@@ -1,13 +1,9 @@
-from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
-
-from ..models import Comment, Post
-
-User = get_user_model()
+from posts.models import Comment, Post, User
 
 
-class PostsCommentsTests(TestCase):
+class TestComments(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

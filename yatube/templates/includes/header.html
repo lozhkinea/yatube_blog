@@ -29,22 +29,26 @@
               >
                 Новая запись
               </a>
+            <li class="nav-item">
+              <a class="nav-link link-dark {% if view_name  == 'posts:profile' and user == author %}active{% endif %}"
+              href="{% url 'posts:profile' user.username %}"
+              >
+                Пользователь: <b>{{ user.username }}</b>
+              </a>
+            <li>
             </li>
             <li class="nav-item"> 
-              <a class="nav-link link-light" href="{% url 'password_change' %}">Изменить пароль</a>
+              <a class="nav-link link-dark {% if view_name  == 'password_change' %}active{% endif %}" href="{% url 'password_change' %}">Изменить пароль</a>
             </li>
             <li class="nav-item"> 
-              <a class="nav-link link-light" href="{% url 'logout' %}">Выйти</a>
+              <a class="nav-link link-dark" href="{% url 'logout' %}">Выйти</a>
             </li>
-            <li>
-              Пользователь: {{ user.username }}
-            <li>
             {% else %}
             <li class="nav-item"> 
-              <a class="nav-link link-light" href="{% url 'login' %}">Войти</a>
+              <a class="nav-link link-dark {% if view_name  == 'login' %}active{% endif %}" href="{% url 'login' %}">Войти</a>
             </li>
             <li class="nav-item"> 
-              <a class="nav-link link-light" href="{% url 'users:signup' %}">Регистрация</a>
+              <a class="nav-link link-dark {% if view_name  == 'users:signup' %}active{% endif %}" href="{% url 'users:signup' %}">Регистрация</a>
             </li>
             {% endif %}
           </ul>
