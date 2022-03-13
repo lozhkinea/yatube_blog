@@ -7,28 +7,17 @@
 {% block content %}
         <div class="row">
           <aside class="col-12 col-md-3">
-            <ul class="list-group list-group-flush">
+            <ul class="list-group">
               <li class="list-group-item">
-                Дата публикации: {{ post.pub_date|date:"d E Y" }}
+                  <b>@{{ post.author.username }}</b>
               </li>
-              {% if post.group %}
               <li class="list-group-item">
-                Группа: {{ post.group }}
-                <a href="{% url 'posts:group_list' post.group.slug %}">
-                  все записи группы
-                </a>
-              </li>
-              {% endif %}
-              <li class="list-group-item">
-                Автор: {{ post.author.get_full_name }}
+                Подписчиков: XXX
+                <br>
+                Подписан: XXX
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
-                Всего постов автора:  <span >{{ post.author.post_set.count }}</span>
-              </li>
-              <li class="list-group-item">
-                <a href="{% url 'posts:profile' post.author.username %}">
-                  все посты пользователя
-                </a>
+                Записей:  {{ post.author.post_set.count }}
               </li>
             </ul>
           </aside>
@@ -36,16 +25,45 @@
             {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
               <img class="card-img my-2" src="{{ im.url }}">
             {% endthumbnail %}
+            <table width="100%">
+              <tr>
+                <td align="left">
+                  <a href="{% url 'posts:profile' post.author.username %}" class="link-primary text-decoration-none"><b>@{{ post.author.username }}</b></a>
+                </td>
+                <td align="right">
+                  {% if not group %}
+                    {% if post.group %}
+                      <a href="{% url 'posts:group_list' post.group.slug %}" class="link-primary card-link text-decoration-none">{{ post.group.title }}</a>
+                    {% endif %}
+                  {% endif %}
+                </td>
+              </tr>
+            </table>
             <p>
               {{ post.text }}
             </p>
-            {% if user.is_authenticated %}
-              {% if user.username == post.author.username %}
-              <a class="btn btn-primary" href="{% url 'posts:post_edit' post.id %}">
-                редактировать запись
-              </a>
-              {% endif %}
-            {% endif %}
+            <table width="100%">
+              <tr>
+                <td align="left">
+                  {% if user.is_authenticated %}
+                    {% if user.username == post.author.username %}
+                      <a class="link-secondary card-link text-decoration-none" href="{% url 'posts:post_edit' post.id %}">
+                        Редактировать
+                      </a>
+                    {% endif %}
+                  {% else %}
+                    <a class="link-secondary card-link text-decoration-none" href="{% url 'login' %}">Войдите на сайт, чтобы редактировать или добавить комментарий</a>
+                  {% endif %}
+                </td>
+                <td align="right" class="link-secondary">
+                  {{ post.pub_date|date:"d E Y г. H:i" }}
+                </td>
+              </tr>
+            </table>
+
+
+
+            
             {%include 'includes/form_comment.html' %}
 
           </article>
