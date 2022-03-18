@@ -56,6 +56,6 @@ class TestComments(TestCase):
             )
         )
         self.assertEqual(
-            response.context['comments'][0].text,
+            response.context['post'].comments.all()[0].text,
             self.TEST_COMMENT_TEXT
         )

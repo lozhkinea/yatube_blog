@@ -144,4 +144,4 @@ CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
 INTERNAL_IPS = [
     '127.0.0.1',
-] 
+]

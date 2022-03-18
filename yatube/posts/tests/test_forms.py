@@ -1,9 +1,9 @@
+import shutil
+import tempfile
+
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
-import shutil
-import tempfile
-from django.test import Client, TestCase
 from django.urls import reverse
 from posts.forms import PostForm
 from posts.models import Group, Post, User
@@ -57,8 +57,15 @@ class TestCreateForm(TestCase):
 
     def test_create_post(self):
         """Валидная форма со страницы создания поста создает запись в Post."""
+        TEST_TEXT = 'Пост с картинкой'
+        TEST_IMG = 'test.gif'
+        uploaded = SimpleUploadedFile(
+            name=TEST_IMG,
+            content=self.small_gif,
+            content_type='image/gif'
+        )
+        form_data = {'text': TEST_TEXT, 'image': uploaded}
         posts_count = Post.objects.count()
-        form_data = {'text': self.post.text}
         response = self.authorized_client.post(
             reverse('posts:post_create'),
             data=form_data,
@@ -70,11 +77,11 @@ class TestCreateForm(TestCase):
             )
         )
         self.assertEqual(Post.objects.count(), posts_count + 1)
-        # при отправке поста с картинкой через форму PostForm
-        # создаётся запись в базе данных
+        upload_to = Post._meta.get_field('image').upload_to
         self.assertTrue(
             Post.objects.filter(
-                image=self.post.image
+                text=TEST_TEXT,
+                image=upload_to + TEST_IMG
             ).exists()
         )
 
