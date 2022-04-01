@@ -47,7 +47,10 @@
             {% if user.is_authenticated %}
               {% if user.username == post.author.username %}
                 <a class="link-secondary card-link text-decoration-none" href="{% url 'posts:post_edit' post.id %}">
-                  Редактировать
+                  редактировать
+                </a>
+                <a class="link-danger card-link text-decoration-none" href="{% url 'posts:post_delete' post.id %}">
+                  удалить
                 </a>
               {% endif %}
             {% endif %}

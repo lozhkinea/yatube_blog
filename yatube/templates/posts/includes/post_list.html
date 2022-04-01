@@ -8,7 +8,12 @@
     <table width="100%">
       <tr>
         <td align="left">
-          <a href="{% url 'posts:profile' post.author.username %}" class="link-primary text-decoration-none"><b>@{{ post.author.username }}</b></a>
+          <a href="{% url 'posts:profile' post.author.username %}" class="link-primary text-decoration-none">
+            <b>@{{ post.author.username }}</b>
+            {%if post.author.get_full_name %}
+              <span> : : </span>{{ post.author.get_full_name }}
+            {% endif %}
+          </a>
         </td>
         <td align="right">
           {% if not group %}
@@ -26,6 +31,16 @@
       <tr>
         <td align="left">
           <a href="{% url 'posts:post_detail' post.pk %}" class="link-secondary card-link text-decoration-none">комментарии </a>
+          {% if user.is_authenticated %}
+              {% if user.username == post.author.username %}
+                <a class="link-secondary card-link text-decoration-none" href="{% url 'posts:post_edit' post.id %}">
+                  редактировать
+                </a>
+                <a class="link-danger card-link text-decoration-none" href="{% url 'posts:post_delete' post.id %}">
+                  удалить
+                </a>
+              {% endif %}
+            {% endif %}
         </td>
         <td align="right" class="link-secondary">
           {{ post.pub_date|date:"d E Y г. H:i" }}

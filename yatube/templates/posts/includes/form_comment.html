@@ -25,7 +25,12 @@
         <a href="{% url 'posts:profile' comment.author.username %}" class="link-primary text-decoration-none">
           @{{ comment.author.username }}
         </a>
-        <p>{{ comment.text }}</p>
+        <p align="justify">{{ comment.text }}</p>
+        <div align="right">
+        <a href="{% url 'posts:delete_comment' comment.id %}" class="link-danger text-decoration-none">
+          удалить коментарий
+        </a>
+        </div>
     </div>
   </div>
 {% endfor %}

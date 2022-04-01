@@ -4,7 +4,7 @@ from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 
 from posts.forms import CommentForm, PostForm
-from posts.models import Follow, Group, Post, User
+from posts.models import Comment, Follow, Group, Post, User
 
 POSTS_PER_PAGE = 10
 
@@ -160,3 +160,19 @@ def profile_unfollow(request, username):
         ).select_related('author', 'user')
     ).delete()
     return redirect('posts:profile', username=username)
+
+
+@login_required
+def post_delete(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    if post.author == request.user:
+        post.delete()
+    return redirect('posts:index')
+
+
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if comment.author == request.user:
+        comment.delete()
+    return redirect('posts:post_detail', post_id=comment.post.id)
