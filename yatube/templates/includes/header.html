@@ -10,36 +10,49 @@
       <ul class="nav nav-pills">
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link link-dark {% if view_name  == 'posts:post_create' %}active{% endif %}"
-            href="{% url 'posts:post_create' %}"
-          >
-            Добавить запись
-          </a>
+          {% with 'posts:post_create' as name %}
+            <a class="nav-link link-dark {% if view_name  == name %}active{% endif %}"
+              href="{% url name %}"
+            >
+              Добавить запись
+            </a>
+          {% endwith %}
         </li>
         <li class="nav-item">
-          <a class="nav-link link-dark {% if view_name  == 'posts:profile' and user == author %}active{% endif %}"
-            href="{% url 'posts:profile' user.username %}"
-          >
-          Пользователь: <b>{{ user.username }}</b>
-          </a>
+          {% with 'posts:profile' as name %}
+            <a class="nav-link link-dark {% if view_name  == name and user == author %}active{% endif %}"
+              href="{% url name user.username %}"
+            >
+            Пользователь: <b>{{ user.username }}</b>
+            </a>
+          {% endwith %}
         </li>
         <li class="nav-item"> 
-          <a class="nav-link link-dark {% if view_name  == 'password_change' %}active{% endif %}"
-            href="{% url 'password_change' %}">Изменить пароль</a>
+          {% with 'password_change' as name %}
+            <a class="nav-link link-dark {% if view_name  == name %}active{% endif %}"
+              href="{% url name %}"
+            >
+              Изменить пароль
+            </a>
+          {% endwith %}
         </li>
         <li class="nav-item"> 
           <a class="nav-link link-dark" href="{% url 'logout' %}">Выйти</a>
         </li>
         {% else %}
         <li class="nav-item"> 
-          <a class="nav-link link-dark" href="{% url 'login' %}">Войти</a>
+          {% with 'login' as name %}
+            <a class="nav-link link-dark {% if view_name  == name %}active{% endif %}" href="{% url name %}">Войти</a>
+          {% endwith %}
         </li>
         <li class="nav-item"> 
-          <a class="nav-link link-dark" href="{% url 'users:signup' %}">Регистрация</a>
+          {% with 'users:signup' as name %}
+            <a class="nav-link link-dark {% if view_name  == name %}active{% endif %}" href="{% url name %}">Регистрация</a>
+          {% endwith %}
         </li>
         {% endif %}
       </ul>
-      {% endwith %} 
+      {% endwith %}
     </div>
   </nav>
 </header>
