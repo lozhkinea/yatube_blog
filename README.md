@@ -1,7 +1,5 @@
 # Yatube blog
 
-# 
-
 Blog of personal diaries. 
 
 Tech stack:
